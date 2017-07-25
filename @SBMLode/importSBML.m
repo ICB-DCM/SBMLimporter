@@ -22,13 +22,17 @@ else
     error([filename ' could not be found in the matlab path!'])
 end
 
-try
-    [model,err] = TranslateSBML([filename extension]);
-    if(~isempty(err))
-        error(err.message);
+if(~isempty(which('TranslateSBML')))
+    try
+        [model,err] = TranslateSBML([filename extension]);
+        if(~isempty(err))
+            error(err.message);
+        end
+    catch err
+        error(['TranslateSBML failed to read the provided sbml file: ' err.message ]);
     end
-catch err
-    error(['TranslateSBML failed to read the provided sbml file: ' err.message ]);
+else
+    error('TranslateSBML is not available, please install libSBML and add TranslateSBML to your path');
 end
 
 if(isfield(model,'fbc_objective'))
